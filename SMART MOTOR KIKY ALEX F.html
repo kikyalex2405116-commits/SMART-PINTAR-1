@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Motor Pro</title>
+
+<style>
+body {
+    font-family:'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
+    margin:0;
+}
+
+.header {
+    text-align:center;
+    padding:15px;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.container {padding:15px;}
+
+.card {
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(10px);
+    padding:15px;
+    border-radius:15px;
+    margin-bottom:15px;
+}
+
+input, select {
+    width:100%;
+    padding:10px;
+    border-radius:10px;
+    border:none;
+    margin-top:10px;
+}
+
+button {
+    margin-top:15px;
+    padding:12px;
+    width:100%;
+    border:none;
+    border-radius:10px;
+    background:#00c853;
+    color:white;
+    font-size:16px;
+}
+
+/* STATUS */
+.good {color:#00ffcc;}
+.warning {color:#ffd600;}
+.danger {color:#ff1744;}
+</style>
+
+</head>
+
+<body>
+
+<div class="header">⚙️ Smart Motor Teknik Mesin</div>
+
+<div class="container">
+
+<div class="card">
+<h3>Pilih Jenis Servis</h3>
+
+<select id="tipe">
+<option value="oli">Oli Mesin</option>
+<option value="gardan">Oli Gardan</option>
+<option value="cvt">Servis CVT</option>
+</select>
+
+<label>Jenis Motor</label>
+<select id="motor">
+<option value="honda_matic">Honda Matic</option>
+<option value="honda_bebek">Honda Bebek</option>
+<option value="honda_sport">Honda Sport</option>
+<option value="yamaha_matic">Yamaha Matic</option>
+<option value="yamaha_bebek">Yamaha Bebek</option>
+<option value="yamaha_sport">Yamaha Sport</option>
+</select>
+
+<label>KM Sekarang</label>
+<input type="number" id="km">
+
+<label>KM Terakhir Servis</label>
+<input type="number" id="last">
+
+<button onclick="cek()">Cek Kondisi</button>
+</div>
+
+<div class="card">
+<h3>Hasil</h3>
+<p id="hasil"></p>
+</div>
+
+</div>
+
+<script>
+function cek(){
+
+let tipe = document.getElementById("tipe").value;
+let motor = document.getElementById("motor").value;
+let km = parseInt(document.getElementById("km").value);
+let last = parseInt(document.getElementById("last").value);
+
+if(isNaN(km)||isNaN(last)){
+    alert("Isi semua data!");
+    return;
+}
+
+let jarak = km - last;
+let hasil="", warna="", rekom="";
+
+/* ===== OLI MESIN ===== */
+if(tipe==="oli"){
+
+    if(jarak >= 2900){
+        hasil="❌ WAJIB GANTI OLI";
+        warna="danger";
+    } else if(jarak >= 2500){
+        hasil="⚠️ OLI MENURUN (Segera ke bengkel)";
+        warna="warning";
+    } else {
+        hasil="✅ OLI MASIH BAGUS";
+        warna="good";
+    }
+
+    if(motor.includes("honda")){
+        if(motor.includes("matic")) rekom="MPX 0.65L";
+        else if(motor.includes("bebek")) rekom="MPX 0.8L";
+        else rekom="SPX 1L";
+    } else {
+        if(motor.includes("sport")) rekom="Yamaha Sport 1L";
+        else rekom="Yamalube 0.8L";
+    }
+
+    document.getElementById("hasil").innerHTML =
+    `<b>Oli Mesin:</b> ${jarak} km<br>
+     <span class="${warna}">${hasil}</span><br>
+     Rekomendasi: ${rekom}`;
+}
+
+/* ===== OLI GARDAN ===== */
+if(tipe==="gardan"){
+
+    if(jarak >= 12000){
+        hasil="❌ WAJIB GANTI OLI GARDAN";
+        warna="danger";
+    } else if(jarak >= 6000){
+        hasil="⚠️ DISARANKAN GANTI";
+        warna="warning";
+    } else {
+        hasil="✅ MASIH AMAN";
+        warna="good";
+    }
+
+    document.getElementById("hasil").innerHTML =
+    `<b>Oli Gardan:</b> ${jarak} km<br>
+     <span class="${warna}">${hasil}</span>`;
+}
+
+/* ===== CVT ===== */
+if(tipe==="cvt"){
+
+    if(jarak >= 8000){
+        hasil="❌ SERVIS TOTAL (semua part baru)";
+        warna="danger";
+    } else if(jarak >= 5000){
+        hasil="⚠️ SERVIS (beberapa part)";
+        warna="warning";
+    } else {
+        hasil="✅ KONDISI NORMAL";
+        warna="good";
+    }
+
+    document.getElementById("hasil").innerHTML =
+    `<b>Servis CVT:</b> ${jarak} km<br>
+     <span class="${warna}">${hasil}</span>`;
+}
+
+}
+</script>
+
+</body>
+</html>
